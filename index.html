@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Protest+Riot&display=swap"/>
+<title>Be My Valentine?</title>
+<style>
+    body, html {
+        font-family: "Protest Riot", sans-serif;
+        font-size:xx-large;
+        height: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #FFDAB9;
+        color: #B76E79;
+    }
+    #buttonContainer {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        gap: 20px;
+    }
+    #container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+    }
+    .moveButton {
+        position: relative;
+        padding: 10px 20px;
+        background-color: #B76E79;
+        color: white;
+        border: none;
+        cursor: pointer;
+        width: auto;
+        border-radius: 5px;
+        box-shadow: 2px 2px 7px 2px #000000;
+    }
+    .clicked {
+        position: absolute;
+    }
+    img {
+        width: 250px;
+        height: auto;
+        border-radius: 10%;
+        border: 1px solid black;
+        box-shadow: 5px 5px 15px 5px #000000;
+    }
+    canvas {
+        display: block;
+        margin: auto;
+        background-color: black;
+        display: none;
+    }
+</style>
+</head>
+<body>  
+<div id="container">
+    <div id="message">Will you be my Valentine? ❤️</div>
+    <img src="https://media.tenor.com/PS6medrGxqwAAAAM/cat-kiss.gif" alt="Valentine's Day GIF">
+    <div id="buttonContainer">
+        <button id="leftButton" class="moveButton" onclick="createFireworks()">Yes</button>
+        <button id="rightButton" class="moveButton" onclick="moveButton()">No</button>
+    </div>
+    <canvas id="fireworksCanvas"></canvas>
+</div>
+
+<script>
+function moveButton() {
+    var synonymsForSure = [
+        "certain?",
+        "positive?",
+        "convinced?",
+        "confident?",
+        "absolute?",
+        "sure?",
+        "definite?",
+        "swear?",
+        "no cap?",
+        "positive?",
+        "not negative?"
+    ];
+
+    var button = document.getElementById("rightButton");
+    if (!button.classList.contains('clicked')) {
+        body = document.querySelector('body');
+        body.appendChild(button)
+        button.classList.add('clicked');
+    }
+
+    var randomX = Math.random() * (window.innerWidth - button.offsetWidth);
+    var randomY = Math.random() * (window.innerHeight - button.offsetHeight);
+
+    button.style.left = randomX + "px";
+    button.style.top = randomY + "px";
+    synonymsForSure = synonymsForSure.filter(item => item !== button.innerText);
+    console.log(synonymsForSure)
+    const randomIndex = Math.floor(Math.random() * synonymsForSure.length);
+    button.innerText = synonymsForSure[randomIndex];
+}
+
+function createFireworks() {
+    const canvas = document.getElementById('fireworksCanvas');
+    const message = document.getElementById('message');
+    const img = document.querySelector('img');
+    const buttonContainer = document.getElementById('buttonContainer');
+    message.style.display = 'none';
+    img.style.display = 'none';
+    buttonContainer.style.display = 'none';
+    canvas.style.display = 'block'
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Array to store particles
+    const particles = [];
+
+    // Function to create a particle
+    function createParticle(x, y, color) {
+        const particle = {
+            x: x,
+            y: y,
+            radius: 2,
+            color: color,
+            velocity: {
+                x: (Math.random() - 0.5) * 6,
+                y: (Math.random() - 0.5) * 6
+            },
+            gravity: 0.2,
+            opacity: 1
+        };
+        particles.push(particle);
+    }
+
+    // Function to animate particles
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((particle, index) => {
+            if (particle.opacity > 0) {
+                particle.velocity.y += particle.gravity;
+                particle.x += particle.velocity.x;
+                particle.y += particle.velocity.y;
+                particle.opacity -= 0.01;
+                ctx.globalAlpha = particle.opacity;
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = particle.color;
+                ctx.fill();
+            } else {
+                particles.splice(index, 1);
+            }
+        });
+    }
+
+    // Function to create a burst of fireworks
+    function createBurst() {
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#00ffff', '#ff00ff'];
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        for (let i = 0; i < 50; i++) {
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            createParticle(x, y, color);
+        }
+    }
+
+    // Create fireworks bursts at random times within a 10-second interval
+    for (let i = 0; i < 100; i++) {
+        const randomTime = Math.random() * 10000; // Random time between 0 and 10 seconds
+        setTimeout(() => {
+            createBurst();
+        }, randomTime);
+    }
+
+    // Call animateParticles to start the animation loop
+    setInterval(animateParticles, 20); // Call animateParticles every 20 millisecond
+
+    setTimeout(() => {
+        window.location.href = 'https://www.youtube.com/watch?v=fjH-3MNY94k'; // Replace 'destination.html' with the URL of the page you want to redirect to
+    }, 10000); // Redirect after a delay of 10000 milliseconds (10 seconds)
+}
+
+
+
+</script>
+
+</body>
+</html>
